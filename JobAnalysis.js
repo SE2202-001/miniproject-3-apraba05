@@ -8,27 +8,22 @@ class Job {
     this.detail = Detail;
   }
 
-  getFormattedPostedTime() {
-    const timeMap = { minute: 1, hour: 60, day: 1440 };
-    const [value, unit] = this.posted.split(" ");
-    return parseInt(value) * (timeMap[unit.replace(/s$/, "")] || 0);
-  }
-
+  // Method to return job details as plain text
   getDetails() {
     return `
-      <div class="job-details">
-        <h3>${this.title}</h3>
-        <p><strong>Type:</strong> ${this.type}</p>
-        <p><strong>Level:</strong> ${this.level}</p>
-        <p><strong>Skill:</strong> ${this.skill}</p>
-        <p><strong>Detail:</strong> ${this.detail}</p>
-        <p><strong>Posted:</strong> ${this.posted}</p>
-      </div>
-    `;
+      Title: ${this.title}
+      Type: ${this.type}
+      Level: ${this.level}
+      Skill: ${this.skill}
+      Detail: ${this.detail}
+      Posted: ${this.posted}
+    `.trim();
   }
 }
 
 const jobList = [];
+
+// Load JSON file and process it
 document.getElementById("load-data").addEventListener("click", () => {
   const fileInput = document.getElementById("upload-json");
   const files = fileInput.files[0];
@@ -46,6 +41,7 @@ document.getElementById("load-data").addEventListener("click", () => {
   reader.readAsText(files);
 });
 
+// Load and display jobs
 function loadJobs(dataLoad) {
   jobList.length = 0;
   const levelSet = new Set(), typeSet = new Set(), skillSet = new Set();
@@ -66,6 +62,7 @@ function loadJobs(dataLoad) {
   displayJobs(jobList);
 }
 
+// Populate filter dropdowns
 function populateFilters(set, elementId) {
   const select = document.getElementById(elementId);
   select.innerHTML = `<option value="">Filter by ${select.id.split("-")[1]}</option>`;
@@ -77,6 +74,7 @@ function populateFilters(set, elementId) {
   });
 }
 
+// Display job listings
 function displayJobs(jobs) {
   const jobListDiv = document.getElementById("job-list");
   jobListDiv.innerHTML = "";
@@ -92,11 +90,17 @@ function displayJobs(jobs) {
   });
 }
 
+// Show details in an alert box
 function showDetails(title) {
   const job = jobList.find((job) => job.title === title);
-  alert(job.getDetails());
+  if (job) {
+    alert(job.getDetails());
+  } else {
+    alert("Job details not found.");
+  }
 }
 
+// Filter functionality
 document.getElementById("filter-level").addEventListener("change", filterJobs);
 document.getElementById("filter-type").addEventListener("change", filterJobs);
 document.getElementById("filter-skill").addEventListener("change", filterJobs);
